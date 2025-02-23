@@ -1,5 +1,5 @@
-# php
-PHP: Clases y funciones utiles para desarrollar sitios web.
+# php-bd-conexion
+PHP-BD-CONEXION: Clases y funciones utiles para desarrollar sitios web con bases de datos.
 ## Comencemos
 La clase permite conexiones a bases de datos en MySQL y SQL Server, para efecto de esta breve documentación supondremos un ejemplo en MySQL. Para inicializarla basta con las siguientes líneas:
 ```php
