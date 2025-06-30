@@ -49,8 +49,8 @@ class Conexion {
         if (is_array($opt)) {
             try {
                 $tipo     = $opt["tipo"];
-                $servidor = $opt["servidor"];
                 $bd       = $opt["bd"];
+                $servidor = isset($opt["servidor"]) ? $opt["servidor"] : NULL;
 
                 if ($tipo == "mysql") {
                     if (!isset($opt["usuario"])) {
@@ -79,6 +79,9 @@ class Conexion {
                     $contrasena = $opt["contrasena"];
 
                     $con = new PDO("sqlsrv:Server=$servidor;Database=$bd", $usuario, $contrasena);
+                }
+                elseif ($tipo == "sqlite") {
+                    $con = new PDO("sqlite:$bd");
                 }
             }
             catch (PDOException $e) {
@@ -135,7 +138,7 @@ class Conexion {
     * @return void Solo ejecuta una consulta
     */
     function support_groupby() {
-        $con->query("SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+        $this->query("SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
     }
 
     /**
@@ -502,7 +505,7 @@ class Select extends Conexion {
     */
     function rightjoin($com) {
         $joins        = $this->joins;
-        $joins       .= "RIGHT JOIN $com\n";
+        $joins       .= "RIGHT JOIN $com\r\n";
         $this->joins  = $joins;
     }
 
@@ -514,7 +517,7 @@ class Select extends Conexion {
     */
     function leftjoin($com) {
         $joins        = $this->joins;
-        $joins       .= "LEFT JOIN $com\n";
+        $joins       .= "LEFT JOIN $com\r\n";
         $this->joins  = $joins;
     }
 
@@ -526,7 +529,7 @@ class Select extends Conexion {
     */
     function innerjoin($com) {
         $joins        = $this->joins;
-        $joins       .= "INNER JOIN $com\n";
+        $joins       .= "INNER JOIN $com\r\n";
         $this->joins  = $joins;
     }
 
@@ -579,12 +582,12 @@ class Select extends Conexion {
         $orderby = $this->orderby;
         $limit   = $this->limit;
 
-        if ($joins) {$sql = "$sql\n$joins";}
-        if ($where) {$sql = "$sql\n$where";}
-        if ($groupby) {$sql = "$sql\n$groupby";}
-        if ($having) {$sql = "$sql\n$having";}
-        if ($orderby) {$sql = "$sql\n$orderby";}
-        if ($limit) {$sql = "$sql\n$limit";}
+        if ($joins) {$sql = "$sql\r\n$joins";}
+        if ($where) {$sql = "$sql\r\n$where";}
+        if ($groupby) {$sql = "$sql\r\n$groupby";}
+        if ($having) {$sql = "$sql\r\n$having";}
+        if ($orderby) {$sql = "$sql\r\n$orderby";}
+        if ($limit) {$sql = "$sql\r\n$limit";}
 
         return $sql;
     }
@@ -713,7 +716,7 @@ class Update extends Conexion {
         $sql = "$sql SET $sets";
 
         if ($where) {
-            $sql = "$sql\n$where";
+            $sql = "$sql\r\n$where";
         }
 
         $update = $this->prepare($sql);
@@ -769,7 +772,7 @@ class Delete extends Conexion {
         $where = $this->where;
 
         if ($where) {
-            $sql = "$sql\n$where";
+            $sql = "$sql\r\n$where";
         }
 
         $delete = $this->prepare($sql);
